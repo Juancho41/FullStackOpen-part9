@@ -28,6 +28,7 @@ const calculateBmi = (height: number, mass: number): string => {
   } else {
     return "Overweight (high weight)";
   }
+
 };
 
 try {
