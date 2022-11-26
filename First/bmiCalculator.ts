@@ -4,16 +4,16 @@ interface Values {
 }
 
 const parseArguments = (args: string[]): Values => {
-  if (args.length < 4) throw new Error("Not enough arguments");
-  if (args.length > 4) throw new Error("Too many arguments");
+  if (args.length < 2) throw new Error("Not enough arguments");
+  if (args.length > 2) throw new Error("Too many arguments");
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+  if (!isNaN(Number(args[0])) && !isNaN(Number(args[1]))) {
     return {
-      value1: Number(args[2]),
-      value2: Number(args[3]),
+      value1: Number(args[0]),
+      value2: Number(args[1]),
     };
   } else {
-    throw new Error("Provided values were not numbers!");
+    throw new Error;
   }
 };
 
@@ -40,6 +40,8 @@ try {
   }
   console.log(errorMessage);
 }
+
+export { calculateBmi, parseArguments };
 
 
 
