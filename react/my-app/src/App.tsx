@@ -1,3 +1,44 @@
+interface CoursePartBase {
+  [index: string]: number | string | string[];
+  name: string;
+  exerciseCount: number;
+  type: string;
+}
+
+interface CourseDescPart extends CoursePartBase {
+  type: string;
+  description: string;
+}
+
+interface CourseNormalPart extends CourseDescPart {
+  type: "normal";
+}
+
+interface CourseProjectPart extends CoursePartBase {
+  type: "groupProject";
+  groupProjectCount: number;
+}
+
+interface CourseSubmissionPart extends CourseDescPart {
+  type: "submission";
+  exerciseSubmissionLink: string;
+}
+
+interface CourseSpecialPart extends CourseDescPart {
+  type: "special";
+  requirements: string[];
+}
+
+
+type CoursePart = CourseNormalPart | CourseProjectPart | CourseSubmissionPart | CourseSpecialPart;
+
+interface courseParts {
+  courseParts: CoursePart[]
+}
+
+interface Course {
+  course: CoursePart
+}
 
 const Header = ({courseName}:{courseName:string}) => {
 
@@ -6,14 +47,47 @@ const Header = ({courseName}:{courseName:string}) => {
   )
 };
 
-interface courseObj {
-  name: string;
-  exerciseCount: number;
-}
+const Part = (props: Course) => {
 
-interface courseParts {
-  courseParts: courseObj[]
-}
+  return(
+    <div style={{display: "inline"}}>
+      {Object.keys(props.course).map(key => {
+
+        if (key !== 'type') {
+          if (key == 'name' || key == 'exerciseCount' ) {
+            return (
+              <span key={key} >
+                <span style={{fontWeight: "bold"}}>{props.course[key]} </span>
+              </span>
+
+            )
+          } else if (key == 'requirements') {
+            return (
+              <div key={key}>
+                <div>required skills: {(props.course[key] as string[]).map(prueba => {
+                  return(
+                    <span key={prueba}>{prueba}, </span>
+                  )
+                })} </div>
+              </div>
+
+            )
+
+          } else {
+              return (
+                <div key={key} >
+                  <p>{props.course[key]} </p>
+                </div>
+
+              )
+          }
+
+        }
+      })}
+    </div>
+
+  )
+};
 
 const Content = (props: courseParts) => {
 
@@ -21,11 +95,47 @@ const Content = (props: courseParts) => {
     <div>
       {props.courseParts.map(course => {
 
-        return(
-        <p key={course.name}>
-          {course.name} {course.exerciseCount}
-        </p>
-        )})}
+        switch (course.type) {
+          case "groupProject":
+            return(
+              <div key={course.name}>
+                <Part course={course} />
+                <hr />
+
+              </div>
+            )
+            break;
+
+          case "normal":
+            return(
+              <div key={course.name}>
+                <Part course={course} />
+                <hr />
+              </div>
+            )
+            break;
+
+            case "submission":
+              return(
+                <div key={course.name}>
+                  <Part course={course} />
+                  <hr />
+                </div>
+              )
+              break;
+
+              case "special":
+                return(
+                  <div key={course.name}>
+                    <Part course={course} />
+                    <hr />
+                  </div>
+                )
+                break;
+
+            default:
+              break;
+        }})}
     </div>
   )
 };
@@ -44,18 +154,38 @@ const Total = (props: courseParts) => {
 
 const App = () => {
   const courseName = "Half Stack application development";
-  const courseParts = [
+  const courseParts: CoursePart[] = [
     {
       name: "Fundamentals",
-      exerciseCount: 10
+      exerciseCount: 10,
+      description: "This is the easy course part",
+      type: "normal"
+    },
+    {
+      name: "Advanced",
+      exerciseCount: 7,
+      description: "This is the hard course part",
+      type: "normal"
     },
     {
       name: "Using props to pass data",
-      exerciseCount: 7
+      exerciseCount: 7,
+      groupProjectCount: 3,
+      type: "groupProject"
     },
     {
       name: "Deeper type usage",
-      exerciseCount: 14
+      exerciseCount: 14,
+      description: "Confusing description",
+      exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev",
+      type: "submission"
+    },
+    {
+      name: "Backend development",
+      exerciseCount: 21,
+      description: "Typing the backend",
+      requirements: ["nodejs", "jest"],
+      type: "special"
     }
   ];
 
