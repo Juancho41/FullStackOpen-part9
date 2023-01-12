@@ -49,3 +49,25 @@ export const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+
+export const setIndividual = (newPatient:Patient):Action => {
+  return {
+    type: "INDIVIDUAL",
+    payload: newPatient
+  };
+};
+
+export const setPatientList = (patientListFromApi:Patient[]):Action => {
+  return {
+    type: "SET_PATIENT_LIST",
+    payload: patientListFromApi
+  };
+};
+
+export const addPatient = (newPatient:Patient):Action => {
+  return {
+    type: "ADD_PATIENT",
+    payload: newPatient
+  };
+};
+
