@@ -26,6 +26,34 @@ const IndividualPage = () => {
         <p>{ind.gender}</p>
         <p>{ind.ssn}</p>
         <p>{ind.occupation}</p>
+        <div>
+          <h3>Entries</h3>
+          <div>{ind.entries.map(elem => {
+            if (elem.diagnosisCodes == undefined) {
+              return(
+                <div key={elem.id}>
+                  <div>{elem.date} - {elem.description}</div>
+
+                </div>
+
+              );
+            }
+
+            return(
+              <div key={elem.id}>
+                <div>{elem.date} - {elem.description}</div>
+                <ul>{elem.diagnosisCodes.map(code => {
+                  return(
+
+                    <li key={code}>{code}</li>
+
+                  );
+                })}</ul>
+              </div>
+
+            );
+          })}</div>
+        </div>
       </div>
     );
   }
