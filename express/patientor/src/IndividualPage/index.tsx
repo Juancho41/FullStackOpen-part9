@@ -1,19 +1,19 @@
 import React from "react";
 import axios from "axios";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { apiBaseUrl } from "../constants";
-import { useStateValue, setIndividual } from "../state";
+import { useStateValue, setIndividual, setDiagnoseList } from "../state";
 import { useParams } from "react-router-dom";
 
 const IndividualPage = () => {
 
-  const [{ individuals }, dispatch] = useStateValue();
+  const [{ diagnosis, individuals }, dispatch] = useStateValue();
 
   const { id } = useParams<{ id: string }>();
 
 
 
-  console.log(Object.values(individuals));
+  //console.log(Object.values(individuals));
 
   const ind = Object.values(individuals).find(element => element.id == id);
 
@@ -37,21 +37,29 @@ const IndividualPage = () => {
                 </div>
 
               );
+            } else if (diagnosis !== undefined) {
+                console.log('SSSSSSSSSSSSSSSSSSSSSSSSS');
+                console.log(diagnosis);
+                return(
+                  <div key={elem.id}>
+                    <div>{elem.date} - {elem.description}</div>
+                    <ul>{elem.diagnosisCodes.map(code => {
+                      return(
+
+                        <li key={code}>{code} - {diagnosis[code].name}</li>
+
+                      );
+                    })}</ul>
+                  </div>
+
+                );
+            } else {
+              return(
+                <div>cargando</div>
+              );
+
             }
 
-            return(
-              <div key={elem.id}>
-                <div>{elem.date} - {elem.description}</div>
-                <ul>{elem.diagnosisCodes.map(code => {
-                  return(
-
-                    <li key={code}>{code}</li>
-
-                  );
-                })}</ul>
-              </div>
-
-            );
           })}</div>
         </div>
       </div>
@@ -72,7 +80,24 @@ const IndividualPage = () => {
     }
 
   };
+
+  const fetchDiagnosis = async () => {
+    try {
+
+      const { data: diagnosisList }  = await axios.get<Diagnosis[]>(
+        `${apiBaseUrl}/diagnoses/`
+      );
+      dispatch(setDiagnoseList(diagnosisList));
+
+    } catch (e) {
+      console.error(e);
+    }
+
+  };
+  void fetchDiagnosis();
   void fetchIndividualPacient();
+
+
   console.log('not found in state');
 
   return(
@@ -81,7 +106,5 @@ const IndividualPage = () => {
 
 
 };
-
-
 
 export default IndividualPage;
