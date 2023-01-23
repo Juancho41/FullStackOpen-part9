@@ -1,8 +1,8 @@
 import patientData from '../data/patients';
 import { v4 as uuid } from 'uuid';
-import { NonSensitivePatientEntry, Patient, NewPatient } from '../types';
+import { NonSensitivePatientEntry, Patient, NewPatient, NewEntry, Entry } from '../types';
 
-const patients: Array<Patient> = patientData as Array<Patient>;
+const patients: Array<Patient> = patientData;
 
 const getEntries = (): Array<Patient> => {
   return patients;
@@ -35,9 +35,30 @@ const addPatient = (entry: NewPatient): NewPatient => {
   return newPatient;
 };
 
+const addPatientEntry = (entry: NewEntry, id: string): Entry => {
+
+  const newPatientEntry = {
+    id: uuid(),
+    ...entry
+  };
+
+  const patient: Patient | undefined = patients.find(patient => patient.id == id);
+
+  if (patient !== undefined) {
+    patient.entries.push(newPatientEntry);
+    return newPatientEntry;
+  } else {
+    throw new Error("Incorrect or missing Entry");
+  }
+
+};
+
+
+
 export default {
   getEntries,
   getNonSensitiveEntries,
   addPatient,
-  getSingleEntrie
+  getSingleEntrie,
+  addPatientEntry
 };
